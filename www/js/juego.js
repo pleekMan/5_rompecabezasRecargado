@@ -12,8 +12,6 @@ var Juego = {
 
   //grilla:[],
 
-  cantidadDePiezasPorLado : 0,
-
 
   // Ac&aacute; vamos a ir guardando la posición vacía
   posicionVacia : {
@@ -28,11 +26,11 @@ Juego.chequearSiGano = function() {
   //var gano = true;
 
   console.log("|| Checkeando Posiciones de Piezas:");
-  for (var y = 0; y < grilla.length; y++) {
-    for (var x = 0; x < grilla[y].length; x++) {
-      var coordsPieza = ((grilla[0].length * y) + x) + 1;
+  for (var y = 0; y < Juego.grilla.length; y++) {
+    for (var x = 0; x < Juego.grilla[y].length; x++) {
+      var coordsPieza = ((Juego.grilla[0].length * y) + x) + 1;
       console.log("=> " + coordsPieza);
-      if (grilla[y][x] != coordsPieza) {
+      if (Juego.grilla[y][x] != coordsPieza) {
         return false
       }
     }
@@ -55,8 +53,10 @@ Juego.intercambiarPosiciones = function (fila1, columna1, fila2, columna2) {
   var valorAnterior = Juego.grilla[fila1][columna1];
   Juego.grilla[fila1][columna1] = Juego.grilla[fila2][columna2];
   Juego.grilla[fila2][columna2] = valorAnterior;
-  console.log(grilla);
+  //console.log(grilla);
 
+  // CODIGO PARA MODIFICAR LOS DIVS DE LAS PIEZAS EN EL DOM
+  /*
   var padre = document.getElementById("_9").parentNode;
 
   var idPiezaVacia = "_9";
@@ -72,6 +72,7 @@ Juego.intercambiarPosiciones = function (fila1, columna1, fila2, columna2) {
   padre.insertBefore(piezaNoVacia, padre.children[piezaANoVaciarEnDOM]);
   padre.removeChild(padre.children[piezaANoVaciarEnDOM + 1]);
   //console.log(padre);
+  */
 
 }
 
@@ -132,10 +133,9 @@ Juego.moverEnDireccion = function (direccion) {
   }
 
   // Se chequea si la nueva posición es válida, si lo es, se intercambia
-  if (posicionValida(nuevaFilaPiezaVacia, nuevaColumnaPiezaVacia)) {
-    intercambiarPosiciones(posicionVacia.fila, posicionVacia.columna, nuevaFilaPiezaVacia, nuevaColumnaPiezaVacia);
-
-    actualizarPosicionVacia(nuevaFilaPiezaVacia, nuevaColumnaPiezaVacia);
+  if (Juego.posicionValida(nuevaFilaPiezaVacia, nuevaColumnaPiezaVacia)) {
+    Juego.intercambiarPosiciones(Juego.posicionVacia.fila, Juego.posicionVacia.columna, nuevaFilaPiezaVacia, nuevaColumnaPiezaVacia);
+    Juego.actualizarPosicionVacia(nuevaFilaPiezaVacia, nuevaColumnaPiezaVacia);        
   }
 
 }
@@ -158,23 +158,26 @@ Juego.mezclarPiezas = function(veces) {
   },50);
 }
 
+//window.onload = Juego.capturarTeclas();
+
 Juego.capturarTeclas = function() {
-  document.body.onkeydown = (function (evento) {
+  document.onkeydown = (function (evento) {
     //debugger;
     console.log("==============");
     if (evento.which == 40 || evento.which == 38 || evento.which == 39 || evento.which == 37) {
-      moverEnDireccion(evento.which);
+      Juego.moverEnDireccion(evento.which);
 
-      var gano = chequearSiGano();
+      var gano = Juego.chequearSiGano();
       if (gano) {
         setTimeout(function () {
-          mostrarCartelGanador();
-       }, 20);
+          Juego.mostrarCartelGanador();
+      }, 20);
       }
       evento.preventDefault();
     }
   })
 }
+
 
 Juego.crearGrilla = function(piezasPorLado){
   
@@ -190,9 +193,9 @@ Juego.crearGrilla = function(piezasPorLado){
 
 Juego.iniciar = function() {
   
-  //Juego.crearGrilla(5);
+  Juego.crearGrilla(5);
 
-  mezclarPiezas(10);
+  //Juego.mezclarPiezas(10);
 
   /*
   if(chequearSiGano()){
