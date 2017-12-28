@@ -28,29 +28,51 @@ var Juego = {
 
 // Esta función va a chequear si el Rompecabezas est&aacute; en la posición ganadora
 Juego.chequearSiGano = function() {
-  //var gano = true;
+  var gano = true;
 
-  console.log("|| Checkeando Posiciones de Piezas:");
+  //console.log("|| Checkeando Posiciones de Piezas:");
+  loop1:
   for (var y = 0; y < Juego.grilla.length; y++) {
     for (var x = 0; x < Juego.grilla[y].length; x++) {
       var coordsPieza = ((Juego.grilla[0].length * y) + x);
       //console.log("=> " + coordsPieza);
       if (Juego.grilla[y][x] != coordsPieza) {
         //console.log("-|| Todavia No ganaste");
-        return false
+        gano = false;
+        break loop1;
       }
     }
   }
   //console.log(gano ? "GANASTE" : "TE FALTAN ALGUNOS MOVIMIENTOS PARA GANAR");
-  return true;
+
+  if (gano) {
+    setTimeout(function () {
+      Juego.mostrarCartel("WIN");
+     }, 20);
+  }
+
+}
+
+Juego.checkearMovimientosRestantes = function(){
+  //console.log("-|| Movs restantes: " + Juego.contadorDeMovimientos);
+  if(Juego.contadorDeMovimientos <= 0){
+    setTimeout(function () {
+      Juego.mostrarCartel("LOSE");
+     }, 50);
+  }
 }
 
 
 
 // la hacen los alumnos, pueden mostrar el cartel como prefieran. Pero es importante que usen
 // esta función
-Juego.mostrarCartelGanador = function () {
-  alert("GANASTE");
+Juego.mostrarCartel = function (estado) {
+  if(estado === "WIN"){
+    //alert("GANASTE");
+    swal("GANASTE!", "Bien por ti!", "success");
+  } else {
+    swal("PERDISTE!", "Mal por ti!", "error");
+  }
 }
 
 Juego.actualizarPiezas = function (){
@@ -108,16 +130,21 @@ Juego.posicionValida = function (fila, columna) {
     console.log("|| MOVIMIENTO INVALIDO");
     return false;
   } else {
-    Juego.setContadorDeMovimientos(Juego.contadorDeMovimientos--);
+    if(!Juego.mezclando){
+      Juego.setContadorDeMovimientos(Juego.contadorDeMovimientos-=1);
+    }
     return true;
   }
 
 }
 
 Juego.setContadorDeMovimientos = function(contador){
-  //Juego.contadorDeMovimientos = contador;
-  document.getElementById("contadorDeMovimientos").innerHTML = "Movimientos Restantes:" + Juego.contadorDeMovimientos;
-
+  Juego.contadorDeMovimientos = contador;
+  if(!Juego.mezclando){
+    $("#contadorDeMovimientos").val(Juego.contadorDeMovimientos);
+  } else {
+    $("#contadorDeMovimientos").val("MEZCLANDO"); 
+  }
 }
 
 // Movimiento de fichas, en este caso la que se mueve es la blanca intercambiando
@@ -136,25 +163,25 @@ Juego.moverEnDireccion = function (direccion) {
   if (direccion == 40) {
     nuevaFilaPiezaVacia = Juego.posicionVacia.fila - 1;
     nuevaColumnaPiezaVacia = Juego.posicionVacia.columna;
-    console.log("|| HACIA ARRIBA /\\");
+    //console.log("|| HACIA ARRIBA /\\");
   }
   // Intercambia pieza blanca con la pieza que está abajo suyo
   else if (direccion == 38) {
     nuevaFilaPiezaVacia = Juego.posicionVacia.fila + 1;
     nuevaColumnaPiezaVacia = Juego.posicionVacia.columna;
-    console.log("|| HACIA ABAJO \\/");
+    //console.log("|| HACIA ABAJO \\/");
   }
   // Intercambia pieza blanca con la pieza que está a su izq
   else if (direccion == 39) {
     nuevaFilaPiezaVacia = Juego.posicionVacia.fila;
     nuevaColumnaPiezaVacia = Juego.posicionVacia.columna - 1;
-    console.log("|| HACIA IZQUIERDA <");
+    //console.log("|| HACIA IZQUIERDA <");
   }
   // Intercambia pieza blanca con la pieza que está a su der
   else if (direccion == 37) {
     nuevaFilaPiezaVacia = Juego.posicionVacia.fila;
     nuevaColumnaPiezaVacia = Juego.posicionVacia.columna + 1;
-    console.log("|| HACIA DERECHA >");
+    //console.log("|| HACIA DERECHA >");
 
   }
 
@@ -172,16 +199,21 @@ Juego.moverEnDireccion = function (direccion) {
 
 Juego.mezclarPiezas = function(veces) {
   console.log("|| SHUFFLING:");
-  if (veces <= 0) { return; }
+  if (veces <= 0) {
+    Juego.mezclando = false;
+    //Juego.setContadorDeMovimientos(Juego.maxMovimientos); 
+    return;
+  }
   var direcciones = [40, 38, 39, 37];
   var direccion = direcciones[Math.floor(Math.random() * direcciones.length)];
   Juego.moverEnDireccion(direccion);
 
   console.log("=> ", veces);
 
+
   setTimeout(function () {
     Juego.mezclarPiezas(veces - 1);
-  },50);
+  },5);
 }
 
 //window.onload = Juego.capturarTeclas();
@@ -193,12 +225,9 @@ Juego.capturarTeclas = function() {
     if (evento.which == 40 || evento.which == 38 || evento.which == 39 || evento.which == 37) {
       Juego.moverEnDireccion(evento.which);
 
-      var gano = Juego.chequearSiGano();
-      if (gano) {
-        setTimeout(function () {
-          Juego.mostrarCartelGanador();
-      }, 20);
-      }
+      Juego.chequearSiGano();
+      Juego.checkearMovimientosRestantes();
+      
       evento.preventDefault();
     }
   })
@@ -240,6 +269,9 @@ Juego.capturarMouse = function(){
       if(mouseClicked.x > piezaPos.x && mouseClicked.x < piezaPos.x + piezaSize && mouseClicked.y > piezaPos.y + piezaSize && mouseClicked.y < piezaPos.y + piezaSize * 2){
         Juego.moverEnDireccion(38);
       }
+      
+      Juego.chequearSiGano();
+      Juego.checkearMovimientosRestantes();
     }
   });
 }
@@ -267,24 +299,6 @@ Juego.crearGrilla = function(piezasPorLado){
     Juego.posicionVacia.columna = piezasPorLado - 1;
 
 }
-
-/*
-Juego.iniciar = function() {
-  
-  Juego.crearGrilla(5);
-
-  //Juego.mezclarPiezas(10);
-
-  
-  // if(chequearSiGano()){
-  //    mostrarCartelGanador();
-  // } else {
-  // }
-  
-  Juego.capturarTeclas();
-
-}
-*/
 
 //se carga la imagen del rompecabezas
 Juego.cargarImagen = function (e) {
@@ -337,15 +351,33 @@ Juego.construirPiezas = function (){
 Juego.iniciar = function (cantMovimientos) {
   this.movimientosTotales = cantMovimientos;
   Juego.contadorDeMovimientos = cantMovimientos;
+  Juego.maxMovimientos = 0;
+  Juego.mezclando = true;
   this.piezas = [];
   this.grilla = [];
+
   
-  document.getElementById("contadorDeMovimientos").innerHTML = Juego.contadorDeMovimientos;
-  document.getElementById("botonReMezclar").onclick = function(){
-    Juego.iniciar(0);
-  }
+  //this.cantidadDePiezasPorLado = document.getElementById("cantidadPiezasPorLado").value;
+  var nivelDificultad = $("input[type='radio'][name='nivel']:checked").val();
+  console.log("-|| Nivel: " + nivelDificultad);
+  Juego.setNivel(nivelDificultad);
+  $("#cantidadPiezasPorLado").val(Juego.cantidadDePiezasPorLado);
+  //$("#contadorDeMovimientos").html = "Movimientos Restantes => "+ Juego.contadorDeMovimientos;
+
+
+
+  //document.getElementById("contadorDeMovimientos").innerHTML = Juego.contadorDeMovimientos;
+  $("#botonReIniciar").click(function(){
+    Juego.iniciar(Juego.contadorDeMovimientos);
+  });
+
+  $("#botonMezclar").click(function(){
+    Juego.mezclando = true;  
+    Juego.mezclarPiezas(20);
+  });
   
-  this.cantidadDePiezasPorLado = document.getElementById("cantidadPiezasPorLado").value;
+
+  
   //se guarda el contexto en una variable para que no se pierda cuando se ejecute la funcion iniciarImagen (que va a tener otro contexto interno)
   var self = this;
   this.crearGrilla(this.cantidadDePiezasPorLado);
@@ -356,14 +388,42 @@ Juego.iniciar = function (cantMovimientos) {
   this.iniciarImagen(function () {
     self.construirPiezas();
     //la cantidad de veces que se mezcla es en funcion a la cantidad de piezas por lado que tenemos, para que sea lo mas razonable posible.
-    //var cantidadDeMezclas = Math.max(Math.pow(self.cantidadDePiezasPorLado, 3), 100);
-    var cantidadDeMezclas = 2;
+    var cantidadDeMezclas = Math.max(Math.pow(self.cantidadDePiezasPorLado, 3), 100);
+    //var cantidadDeMezclas = 2;
 
     Juego.capturarTeclas();
     Juego.capturarMouse();
     self.mezclarPiezas(cantidadDeMezclas);
-    Juego.setContadorDeMovimientos(cantMovimientos);
   });
+}
+
+Juego.setNivel = function(nivel){
+  var piezas = 0;
+  var movimientos = 0;
+
+  nivel = nivel == undefined ? "facil" : nivel;
+  
+  if(nivel == "facil"){
+    piezas = 3;
+    movimientos = 30;
+  } else if(nivel == "medio"){
+    piezas = 6;
+    movimientos = 60;
+  } else if(nivel == "dificil"){
+    piezas = 10;
+    movimientos = 100;
+  } else {
+    // CUSTOM
+    piezas = Math.abs($("#cantidadPiezasPorLado").val());
+    movimientos = Math.abs($("#contadorDeMovimientos").val());
+  }
+
+  Juego.cantidadDePiezasPorLado = piezas;
+  Juego.maxMovimientos = movimientos;
+  Juego.contadorDeMovimientos = Juego.maxMovimientos;
+  $("#contadorDeMovimientos").val(Juego.maxMovimientos);
+
+
 }
 
 
@@ -380,6 +440,14 @@ setInterval(function() {
       canvas.fillStyle = "white";
       canvas.fillText(pieza.id, pieza.x + 5, pieza.y + 13);
      });
+
+     // RESALTAR LA PIEZA MOVIBLE
+     // begin/closePath es necesario debido a que clearRect se comporta raro sin esto.
+     canvas.beginPath();
+     canvas.strokeStyle = "black";
+     canvas.rect(Juego.piezas[Juego.piezas.length - 1].x, Juego.piezas[Juego.piezas.length - 1].y, Juego.piezas[0].width, Juego.piezas[0].height);
+     canvas.stroke();
+     canvas.closePath();
 
 }, 1000 / 30);
 
