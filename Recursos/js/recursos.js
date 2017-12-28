@@ -1,5 +1,5 @@
 //se carga la imagen del rompecabezas
-Juego.cargarImagen = function (e) {
+cargarImagen: function (e) {
     //se calcula el ancho y el alto de las piezas de acuerdo al tamaño del canvas (600). 
     this.anchoPiezas = Math.floor(600 / this.cantidadDePiezasPorLado);
     this.altoPiezas = Math.floor(600 / this.cantidadDePiezasPorLado);
@@ -7,10 +7,10 @@ Juego.cargarImagen = function (e) {
     this.anchoDeRompecabezas = this.anchoPiezas * this.cantidadDePiezasPorLado;
     this.altoDeRompecabezas = this.altoPiezas * this.cantidadDePiezasPorLado;
     this.configurarCanvas();
-  }
+  },
 
   //funcion que carga la imagen
-  Juego.iniciarImagen = function (callback) {
+  iniciarImagen: function (callback) {
     this.imagen = new Image();
     var self = this;
     //se espera a que se termine de cargar la imagen antes de ejecutar la siguiente funcion
@@ -19,10 +19,10 @@ Juego.cargarImagen = function (e) {
       callback();
     }, false);
     this.imagen.src = "images/imagen.jpg";
-  }
+  },
 
   //una vez elegido el nivel, se inicia el juego
-  Juego.iniciar = function (cantMovimientos) {
+  iniciar: function (cantMovimientos) {
     this.movimientosTotales = cantMovimientos;
     this.contadorDeMovimientos = cantMovimientos;
     this.piezas = [];

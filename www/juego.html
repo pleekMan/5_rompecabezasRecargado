@@ -5,6 +5,12 @@
     <title>BMO Arcade</title>
     <link rel="stylesheet" href="css/juego.css">
 
+    <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+    <script src="js/sweetalert/sweetalert.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="js/sweetalert/sweetalert.css">
+    <link href="https://fonts.googleapis.com/css?family=Oswald:300,400,500,600,700" rel="stylesheet">
+
+
   </head>
   <body>
     <div class="col-40">
@@ -17,11 +23,20 @@
          <ul>
             <li>Mover las piezas presionando las teclas de flecha.</li>
             <li>Encontrar el orden correcto de las piezas.</li>
+            <li>Piezas por Lado: <input type="text" id="cantidadPiezasPorLado" value=4 size="20px"></li>
+            <button id="botonReMezclar" type="button">- ReMezclar -</button>
+
+            <li id="contadorDeMovimientos">Movimientos:</li>
+
          </ul>
       </div>
     </div>
+   <div class="col-60">
+      <canvas id="miCanvas" width="600px" height="600px">
+      </canvas>
+   </div>
 
-    <div class="col-60">
+    <!-- <div class="col-60">
       <div id="juego">
             <div class="pieza" id="_1"><img src="images/10.jpg"></div>
             <div class="pieza" id="_2"><img src="images/20.jpg"></div>
@@ -34,9 +49,11 @@
             <div class="pieza" id="_9"><img src="images/9.png"></div>
 
       </div>
-    </div>
+    </div> -->
 
     <script src="js/juego.js"></script>
+    <script src="js/Pieza.js"></script>
+
 
   </body>
 </html>
