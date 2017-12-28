@@ -1,5 +1,5 @@
-//var canvasElement = document.getElementById("miCanvas");
-//var canvas = canvasElement.getContext("2d");
+var canvasElement = document.getElementById("miCanvas");
+var canvas = canvasElement.getContext("2d");
 
 var mouseClicked = {
   x: 0,
