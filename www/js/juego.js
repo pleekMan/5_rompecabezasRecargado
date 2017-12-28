@@ -1,5 +1,5 @@
-var canvasElement = document.getElementById("miCanvas");
-var canvas = canvasElement.getContext("2d");
+//var canvasElement = document.getElementById("miCanvas");
+//var canvas = canvasElement.getContext("2d");
 
 var mouseClicked = {
   x: 0,
@@ -353,6 +353,8 @@ Juego.iniciar = function (cantMovimientos) {
   Juego.contadorDeMovimientos = cantMovimientos;
   Juego.maxMovimientos = 0;
   Juego.mezclando = true;
+  Juego.frameCount = 0;
+  Juego.opacidadObraFinal = 0.5;
   this.piezas = [];
   this.grilla = [];
 
@@ -428,27 +430,42 @@ Juego.setNivel = function(nivel){
 
 
 setInterval(function() {
-     canvas.clearRect(0, 0, canvasElement.width, canvasElement.height);
-
+      canvas.clearRect(0, 0, canvasElement.width, canvasElement.height);
+      Juego.frameCount+=1;
     
      Juego.piezas.forEach(function(pieza) {
       canvas.drawImage(pieza.image, pieza.xCrop, pieza.yCrop, pieza.width, pieza.height, pieza.x, pieza.y, pieza.width, pieza.height);
-      //canvas.drawImage(pieza.image, pieza.x, pieza.y);
       
+      // MOSTRAR LOS INDICES DE LAS PIEZAS
+      /*
       canvas.fillStyle = "teal";
       canvas.fillRect(pieza.x, pieza.y, 20,20);
       canvas.fillStyle = "white";
       canvas.fillText(pieza.id, pieza.x + 5, pieza.y + 13);
+      */
      });
 
-     // RESALTAR LA PIEZA MOVIBLE
-     // begin/closePath es necesario debido a que clearRect se comporta raro sin esto.
-     canvas.beginPath();
-     canvas.strokeStyle = "black";
-     canvas.rect(Juego.piezas[Juego.piezas.length - 1].x, Juego.piezas[Juego.piezas.length - 1].y, Juego.piezas[0].width, Juego.piezas[0].height);
-     canvas.stroke();
-     canvas.closePath();
+     Juego.mostrarPiezaMovible();
 
-}, 1000 / 30);
+     canvas.save();
+     canvas.globalAlpha = $("#imageSlider").val();
+     canvas.drawImage(Juego.piezas[0].image,0,0);
+     canvas.restore();
+
+
+},1000/30);
+
+Juego.mostrarPiezaMovible = function() {
+
+      var alpha = Math.sin(Juego.frameCount * 0.05);
+      alpha = Juego.restringirRango(alpha, 0, 0.5);
+      canvas.fillStyle = "rgba(127,127,127,"+alpha+")";
+      canvas.fillRect(Juego.piezas[Juego.piezas.length - 1].x, Juego.piezas[Juego.piezas.length - 1].y, Juego.piezas[0].width, Juego.piezas[0].height);
+}
+
+Juego.restringirRango = function(valor, min, max) {
+  return valor > max ? max : valor < min ? min : valor;
+}
 
 Juego.iniciar(10);
+//requestAnimationFrame(Juego.canvasAnimation);

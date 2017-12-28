@@ -91,6 +91,7 @@ button:hover{
 #miCanvas{
    /* border: solid 2px red; */
    margin: 0;
+   border: 5px black solid;
 }
 
 .col-40, .col-60 {

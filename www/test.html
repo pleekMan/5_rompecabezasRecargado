@@ -17,6 +17,7 @@
   <script src="js/test/test-lib/mocha.js"></script>
   <script> mocha.setup('bdd');</script>
   <script src="js/juego.js"></script>
+  <script src="js/Pieza.js"></script>
   <script src="js/test/tests.js"></script>
   <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
   <script>
@@ -26,7 +27,10 @@
   </script>
  </head>
 <body>
+  <h3>SE TIENE QUE COMENTAR LAS 2 PRIMERAS LINEAS DE canvas EN juego.js, PARA QUE EL TEST FUNCIONE (??)</h3>
   <div id="mocha"></div>
+  <canvas id="miCanvas" width="600px" height="600px">
+    </canvas>
 </body>
 
 </html>
