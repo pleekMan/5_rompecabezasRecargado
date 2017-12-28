@@ -14,28 +14,39 @@
   </head>
   <body>
     <div class="col-40">
-      <div id="titulo">Rompecabezas
-
+      <div id="tituloContainer">
+        <div id="titulo">PALOMA MARQUES's</div>
+        <div id="subTitulo">ARTWORK PUZZLE</div>
       </div>
 
       <div id="instrucciones">
-         <h1>Instrucciones</h1>
+         <h1>INSTRUCCIONES</h1>
          <ul>
-            <li>Mover las piezas presionando las teclas de flecha.</li>
+            <li>Mover las piezas con mouse o teclas.</li>
             <li>Encontrar el orden correcto de las piezas.</li>
-            <li>Piezas por Lado: <input type="text" id="cantidadPiezasPorLado" value=4></li>
-            <li>Movimientos Restantes: <input type="text" id="contadorDeMovimientos" value=10 ></li>
+            
+            <h1>OPCIONES</h1>
+            <li>Nivel:</li>
 
             <form action="">
-              <input type="radio" name="nivel" value="facil">- Facil<br>
-              <input type="radio" name="nivel" value="medio">- Medio<br>
-              <input type="radio" name="nivel" value="dificil"> - Dificil<br>
-              <input type="radio" name="nivel" value="custom"> - Elegir
+              <input type="radio" name="nivel" value="facil"> F&aacute;cil<br>
+              <input type="radio" name="nivel" value="medio"> Medio<br>
+              <input type="radio" name="nivel" value="dificil"> Dificil<br>
+              <br>
+              <input type="radio" name="nivel" value="custom"> Elegir
             </form>
-
-            <button id="botonReIniciar" type="button">- ReIniciar -</button>
-            <button id="botonMezclar" type="button">- Mezclar -</button>
-
+            <ul>
+              <li>Piezas por Lado: <input type="text" id="cantidadPiezasPorLado" value=4></li>
+              <li>Movimientos Disponibles: <input type="text" id="contadorDeMovimientos" value=10 ></li>
+            </ul>
+            <br>
+            <button id="botonReIniciar" type="button">REINICIAR</button>
+            <button id="botonMezclar" type="button">SOLO MEZCLAR</button>
+            <br>
+            <p>
+            Imagen de Obra:
+            <input type="range" min="0" max="1" value="0.5" step="0.05" class="slider" id="imageSlider">
+              </p>
          </ul>
       </div>
     </div>
