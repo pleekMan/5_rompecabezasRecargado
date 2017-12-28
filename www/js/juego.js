@@ -377,6 +377,9 @@ Juego.iniciar = function (cantMovimientos) {
     Juego.mezclando = true;  
     Juego.mezclarPiezas(20);
   });
+
+  $("#imageSlider").val(1);
+  $("#imageSlider").delay(2000).animate({value:"0"},5000); 
   
 
   
